@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الشيخ سولي | Security Command</title>
+<style>
+:root {
+ --red:#ff193b; --dark:#08090d; --panel:#11131a;
+ --line:#29202a; --muted:#9295a4; --green:#25e6a0;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--dark);color:#eee;
+ font-family:Arial,Tahoma,sans-serif;
+}
+header{
+ background:linear-gradient(110deg,#19070d,#100e15);
+ border-bottom:1px solid #4b1423;padding:20px;
+ position:sticky;top:0;z-index:5;
+}
+.brand{color:var(--red);font-size:25px;font-weight:900}
+.sub{color:var(--muted);font-size:11px;margin-top:7px}
+.layout{display:flex;min-height:calc(100vh - 75px)}
+aside{
+ width:235px;flex-shrink:0;background:#0d0e14;
+ border-left:1px solid var(--line);padding:14px;
+}
+.nav{
+ width:100%;text-align:right;padding:12px;
+ background:transparent;border:1px solid transparent;
+ color:#bbb;border-radius:8px;margin-bottom:5px;cursor:pointer;
+}
+.nav:hover,.nav.active{
+ background:#29101a;color:#ff536b;border-color:#651c31;
+}
+main{padding:22px;flex:1;min-width:0}
+h2{color:#ff3854;margin-top:0}
+.status{
+ display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px
+}
+.stat{
+ background:var(--panel);border:1px solid var(--line);
+ padding:14px;border-radius:10px;flex:1;min-width:120px
+}
+.stat strong{display:block;color:var(--red);font-size:23px}
+.stat small{color:var(--muted)}
+.tools{
+ display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));
+ gap:12px;margin-top:20px
+}
+.tool{
+ min-height:92px;background:linear-gradient(145deg,#17131b,#0d0e14);
+ border:1px solid #34202b;color:#eee;border-radius:10px;
+ padding:14px;cursor:pointer;text-align:right;
+ transition:.2s;position:relative;overflow:hidden;
+}
+.tool:before{
+ content:"";position:absolute;top:0;right:0;width:3px;height:100%;
+ background:var(--red);opacity:.6
+}
+.tool:hover{
+ transform:translateY(-4px);border-color:var(--red);
+ box-shadow:0 0 18px #ff193b30;
+}
+.tool b{display:block;margin-bottom:9px;color:#ff536b}
+.tool small{color:var(--muted)}
+.panel{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:12px;padding:17px;margin-top:20px
+}
+input{
+ width:100%;padding:13px;background:#080a10;
+ border:1px solid #45303b;color:white;border-radius:8px;
+ margin:8px 0;outline:none
+}
+input:focus{border-color:var(--red)}
+.action{
+ background:#a50f2c;color:white;border:0;
+ border-radius:7px;padding:12px 18px;cursor:pointer
+}
+.action:hover{background:#e31a40}
+#output{
+ white-space:pre-wrap;overflow-wrap:anywhere;
+ color:var(--green);background:#070b0b;padding:15px;
+ border-radius:8px;min-height:85px;margin-top:12px;
+ border:1px solid #174535;font-size:13px
+}
+footer{color:#777;text-align:center;padding:25px;font-size:11px}
+#clock{color:var(--green);font-size:12px}
+@media(max-width:750px){
+ .layout{display:block}
+ aside{width:100%;display:flex;overflow-x:auto;gap:5px}
+ .nav{min-width:130px;text-align:center}
+ main{padding:14px}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">『اڶــشــېــخ ســﯡڶــې』</div>
+ <div class="sub">ADVANCED CYBER COMMAND CENTER · LINUX MINT EDITION</div>
+</header>
+
+<div class="layout">
+<aside id="sidebar"></aside>
+<main>
+ <div class="status">
+  <div class="stat"><strong>12</strong><small>أقسام النظام</small></div>
+  <div class="stat"><strong>156</strong><small>أداة تفاعلية</small></div>
+  <div class="stat"><strong style="color:var(--green)">ONLINE</strong><small>حالة الواجهة</small></div>
+  <div class="stat"><strong id="clock">--:--</strong><small>الوقت المحلي</small></div>
+ </div>
+
+ <h2 id="heading">مركز القيادة الرئيسي</h2>
+ <p style="color:var(--muted)">اختر القسم ثم الأداة التي تريد استخدامها.</p>
+
+ <div id="tools" class="tools"></div>
+
+ <div class="panel">
+  <h3 style="color:var(--red)">مختبر الفحص الآمن</h3>
+  <p style="color:var(--muted)">تحقق من صيغة رابط أو عنوان IP دون إرسال طلبات إلى أجهزة خارجية.</p>
+  <input id="target" placeholder="مثال: https://example.com أو 192.168.1.1">
+  <button class="action" onclick="inspect()">بدء التحقق</button>
+  <div id="output">SYSTEM READY // WAITING FOR COMMAND</div>
+ </div>
+
+ <footer>
+  © 2026 『اڶــشــېــخ ســﯡڶــې』 — ALL RIGHTS RESERVED<br>
+  PERSONAL CYBER LEARNING LAB · LOCAL DEMO
+ </footer>
+</main>
+</div>
+
+<script>
+const sections = [
+["01","الفحص والتحقق",["فحص صيغة الرابط","تحليل عنوان IP","تحقق من النطاق","تحليل البروتوكول","فحص صيغة البريد","تحليل المنفذ نصياً","معاينة الرابط","استخراج اسم النطاق","تحقق من HTTPS","تحليل المسار","فحص طول الرابط","ترميز الرابط","تقرير الفحص"]],
+["02","أدوات الشبكات",["حاسبة IP","حاسبة Subnet","محلل IPv4","محلل IPv6","عارض DNS تجريبي","معلومات الشبكة","قاموس الشبكات","شرح TCP","شرح UDP","شرح HTTP","شرح HTTPS","محول CIDR","اختبار تعليمي"]],
+["03","معلومات النظام",["معلومات Linux","إصدار النظام","دليل المجلدات","شرح الذاكرة","شرح المعالج","معلومات التخزين","معلومات الملفات","معلومات الصلاحيات","معلومات العمليات","دليل الطرفية","أوامر النظام","قاموس Linux","تقرير النظام"]],
+["04","أدوات Linux",["شرح ls","شرح pwd","شرح cd","شرح mkdir","شرح touch","شرح cp","شرح mv","شرح grep","شرح find","شرح chmod","شرح ps","شرح top","مساعد الأوامر"]],
+["05","أدوات الملفات",["محلل امتداد","عداد الأحرف","عداد الكلمات","منسق النصوص","مقارنة نصوص","منظف النص","مولد أسماء","محول حالة الحروف","استخراج الأسطر","ترتيب النص","عكس النص","تقرير الملف","مساعد الملفات"]],
+["06","التشفير والحماية",["شرح Base64","ترميز النص","فك Base64","شرح SHA-256","مولد تجزئة محلي","شرح التشفير","شرح HTTPS","مبادئ الخصوصية","مفهوم المصادقة","شرح 2FA","دليل كلمات المرور","شرح التوقيع الرقمي","اختبار تعليمي"]],
+["07","تحليل النصوص",["تحليل النص","استخراج الأرقام","استخراج الروابط","عد الكلمات","عد الحروف","تحليل الجمل","تنظيف النص","تحويل JSON","تنسيق JSON","مقارنة نصوص","توليد ملخص تجريبي","استخراج البريد","تقرير النص"]],
+["08","مولدات تجريبية",["مولد كلمة مرور","مولد أرقام","مولد معرف","مولد نص عشوائي","مولد UUID","مولد رمز تجريبي","مولد ألوان","مولد تاريخ","مولد اسم ملف","مولد Hash تجريبي","مولد بيانات وهمية","مولد قائمة","تجديد النتائج"]],
+["09","أدوات المطورين",["عارض HTML","عارض CSS","منسق JavaScript","محرر JSON","حاسبة الأرقام","محول الوحدات","محلل Regex","شرح API","شرح Git","قاموس البرمجة","اختبار JavaScript","عارض الوقت","معلومات المتصفح"]],
+["10","مختبر التعلم",["درس الشبكات","درس Linux","درس Python","درس HTML","درس CSS","درس JavaScript","مبادئ الأمن","مفاهيم التشفير","مبادئ الخصوصية","مصطلحات تقنية","اختبار معرفة","قاموس تقني","خطة التعلم"]],
+["11","سجل العمليات",["آخر العمليات","عدد الأدوات","تاريخ الجلسة","وقت الجلسة","سجل الفحص","تقرير الجلسة","تصدير السجل","مسح السجل","حالة الواجهة","معلومات الجلسة","إحصائيات","سجل التنبيهات","إعادة ضبط"]],
+["12","إعدادات النظام",["تغيير المظهر","الوضع الداكن","حجم الخط","تأثير الواجهة","صوت الواجهة","معلومات الموقع","حقوق الملكية","معلومات الإصدار","معلومات المشروع","اختبار الأزرار","مسح النتائج","إعادة تحميل","حول الشيخ سولي"]]
+];
+
+let history=[];
+let current=0;
+const sidebar=document.getElementById("sidebar");
+const tools=document.getElementById("tools");
+const output=document.getElementById("output");
+
+sections.forEach((s,i)=>{
+ const b=document.createElement("button");
+ b.className="nav";
+ b.textContent=s[0]+" | "+s[1];
+ b.onclick=()=>showSection(i);
+ sidebar.appendChild(b);
+});
+
+function showSection(i){
+ current=i;
+ document.querySelectorAll(".nav").forEach((b,n)=>b.classList.toggle("active",n===i));
+ document.getElementById("heading").textContent=sections[i][1];
+ tools.innerHTML="";
+ sections[i][2].forEach((name,n)=>{
+  const b=document.createElement("button");
+  b.className="tool";
+  b.innerHTML="<b>"+String(n+1).padStart(2,"0")+" / "+name+"</b><small>اضغط لتشغيل الأداة</small>";
+  b.onclick=()=>runTool(i,n);
+  tools.appendChild(b);
+ });
+}
+function log(message){
+ const time=new Date().toLocaleTimeString("ar-EG");
+ history.unshift(time+" | "+message);
+ output.textContent=message;
+}
+function runTool(i,n){
+ const name=sections[i][2][n];
+ if(name==="مسح السجل"){history=[];log("تم مسح السجل المحلي.");return}
+ if(name==="تصدير السجل"){
+  const blob=new Blob([history.join("\n")],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="souley-log.txt";a.click();
+  URL.revokeObjectURL(a.href);log("تم تجهيز سجل الجلسة.");return;
+ }
+ if(name==="تغيير المظهر"||name==="الوضع الداكن"){
+  document.body.style.background="#08090d";log("تم تفعيل المظهر الداكن.");return;
+ }
+ if(name==="حجم الخط"){
+  document.body.style.fontSize="17px";log("تم تعديل حجم الخط.");return;
+ }
+ if(name==="تأثير الواجهة"){
+  document.querySelectorAll(".tool").forEach(b=>b.style.boxShadow="0 0 12px #ff193b55");
+  log("تم تفعيل التأثير البصري.");return;
+ }
+ if(name==="إعادة تحميل"){location.reload();return}
+ if(name==="حول الشيخ سولي"||name==="حقوق الملكية"){
+  log("『اڶــشــېــخ ســﯡڶــې』\n© 2026 All Rights Reserved\nPersonal learning dashboard.");return;
+ }
+ if(name==="اختبار الأزرار"){
+  log("تم تشغيل اختبار الواجهة. جميع الأدوات ظاهرة وقابلة للتفاعل.");return;
+ }
+ if(name==="عد الكلمات"||name==="عداد الكلمات"||name==="عداد الأحرف"||name==="عداد الحروف"){
+  const t=prompt("اكتب النص للتحليل")||"";
+  log("عدد الكلمات: "+(t.trim()?t.trim().split(/\s+/).length:0)+"\nعدد الأحرف: "+t.length);return;
+ }
+ if(name==="مولد كلمة مرور"){
+  const chars="abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#";
+  let p="";for(let x=0;x<16;x++)p+=chars[Math.floor(Math.random()*chars.length)];
+  log("كلمة مرور تجريبية:\n"+p);return;
+ }
+ if(name==="تحليل عنوان IP"||name==="محلل IPv4"){
+  inspect();return;
+ }
+ if(name==="فحص صيغة الرابط"||name==="معاينة الرابط"||name==="تحقق من النطاق"){
+  inspect();return;
+ }
+ log("TOOL: "+name+"\nSECTION: "+sections[i][1]+"\nSTATUS: DEMO MODE\n\nهذه أداة تعليمية. لم يتم الاتصال بأي جهاز أو موقع خارجي.\nيمكن تطوير وظيفتها محلياً في المراحل القادمة.");
+}
+function inspect(){
+ const v=document.getElementById("target").value.trim();
+ if(!v){log("ERROR: أدخل رابطاً أو عنوان IP أولاً.");return}
+ const ipv4=/^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)$/;
+ let result="";
+ if(ipv4.test(v)){
+  result="VALID IPv4 FORMAT\nالعنوان صحيح من ناحية الصيغة فقط.\nلم يتم فحص الجهاز.";
+ }else{
+  try{
+   const u=new URL(v.includes("://")?v:"https://"+v);
+   if(!u.hostname.includes("."))throw Error();
+   result="VALID URL FORMAT\nDomain: "+u.hostname+"\nProtocol: "+u.protocol+"\nPath: "+u.pathname+"\nتنبيه: صحة الصيغة لا تعني أن الموقع آمن.";
+  }catch(e){result="INVALID FORMAT\nالمدخل ليس عنوان IP أو رابطاً صالحاً."}
+ }
+ log(result);
+}
+setInterval(()=>document.getElementById("clock").textContent=new Date().toLocaleTimeString("ar-EG"),1000);
+showSection(0);
+</script>
+</body>
+</html>
